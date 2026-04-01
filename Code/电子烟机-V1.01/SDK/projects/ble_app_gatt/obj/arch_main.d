@@ -6,12 +6,12 @@
 .\obj\arch_main.o: ..\..\sdk\ble_stack\com\rwble_hl\rwble_hl_error.h
 .\obj\arch_main.o: .\config\rwprf_config.h
 .\obj\arch_main.o: ..\..\sdk\plactform\arch\arch.h
-.\obj\arch_main.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\arch_main.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\arch_main.o: ..\..\sdk\plactform\arch\compiler\compiler.h
 .\obj\arch_main.o: ..\..\sdk\plactform\arch\ll\ll.h
-.\obj\arch_main.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\obj\arch_main.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
-.\obj\arch_main.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\arch_main.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\obj\arch_main.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\arch_main.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\obj\arch_main.o: ..\..\sdk\plactform\arch\boot\boot.h
 .\obj\arch_main.o: ..\..\sdk\ble_stack\com\rwip\api\rwip.h
 .\obj\arch_main.o: ..\..\sdk\plactform\driver\syscntl\syscntl.h
@@ -43,7 +43,7 @@
 .\obj\arch_main.o: ..\..\sdk\plactform\reg\reg_assert_mgr.h
 .\obj\arch_main.o: ..\..\sdk\plactform\reg\_reg_assert_mgr.h
 .\obj\arch_main.o: ..\..\sdk\plactform\driver\reg\reg_access.h
-.\obj\arch_main.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\arch_main.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\string.h
 .\obj\arch_main.o: ..\..\sdk\plactform\core_modules\common\api\co_utils.h
 .\obj\arch_main.o: ..\..\sdk\ble_stack\inc\em\em_map.h
 .\obj\arch_main.o: ..\..\sdk\plactform\reg\_reg_common_em_et.h
@@ -80,7 +80,7 @@
 .\obj\arch_main.o: ..\..\libs\drv\drv_load.h
 .\obj\arch_main.o: ..\..\libs\sys_manager.h
 .\obj\arch_main.o: ..\..\libs\drv\drv_charger.h
-.\obj\arch_main.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\arch_main.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\arch_main.o: app\app_uart.h
 .\obj\arch_main.o: ..\..\sdk\plactform\reg\reg_uart.h
 .\obj\arch_main.o: ..\..\sdk\plactform\reg\_reg_uart.h
@@ -92,7 +92,7 @@
 .\obj\arch_main.o: ..\..\sdk\ble_stack\inc\ke\ke_timer.h
 .\obj\arch_main.o: ..\..\sdk\plactform\driver\uart2\uart2.h
 .\obj\arch_main.o: ..\..\libs\Tools\tools.h
-.\obj\arch_main.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\ctype.h
+.\obj\arch_main.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\ctype.h
 .\obj\arch_main.o: ..\..\libs\drv\drv_rgb.h
 .\obj\arch_main.o: ..\..\libs\AT_Module\at.h
 .\obj\arch_main.o: ..\..\sdk\plactform\driver\adc\adc.h

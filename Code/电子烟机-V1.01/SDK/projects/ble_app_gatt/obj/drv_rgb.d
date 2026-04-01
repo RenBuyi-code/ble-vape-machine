@@ -1,7 +1,7 @@
 .\obj\drv_rgb.o: ..\..\libs\drv\drv_rgb.c
 .\obj\drv_rgb.o: ..\..\sdk\plactform\driver\gpio\gpio.h
-.\obj\drv_rgb.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\obj\drv_rgb.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\drv_rgb.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\drv_rgb.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\drv_rgb.o: ..\..\sdk\plactform\arch\BK3432_reg.h
 .\obj\drv_rgb.o: ..\..\sdk\plactform\core_modules\rf\api\rf.h
 .\obj\drv_rgb.o: ..\..\libs\drv\drv_rgb.h
@@ -15,4 +15,4 @@
 .\obj\drv_rgb.o: .\config\user_config.h
 .\obj\drv_rgb.o: ..\..\sdk\plactform\arch\ll\ll.h
 .\obj\drv_rgb.o: ..\..\sdk\plactform\arch\compiler\compiler.h
-.\obj\drv_rgb.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\drv_rgb.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\string.h

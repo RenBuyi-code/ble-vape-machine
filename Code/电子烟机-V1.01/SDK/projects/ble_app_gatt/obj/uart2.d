@@ -1,8 +1,8 @@
 .\obj\uart2.o: ..\..\sdk\plactform\driver\uart2\uart2.c
-.\obj\uart2.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\uart2.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
 .\obj\uart2.o: ..\..\sdk\plactform\driver\timer\timer.h
-.\obj\uart2.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
-.\obj\uart2.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\uart2.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\uart2.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\obj\uart2.o: ..\..\sdk\plactform\driver\uart2\uart2.h
 .\obj\uart2.o: .\config\rwip_config.h
 .\obj\uart2.o: ..\..\sdk\ble_stack\com\rwble\rwble_config.h
@@ -18,7 +18,7 @@
 .\obj\uart2.o: ..\..\sdk\plactform\arch\arch.h
 .\obj\uart2.o: ..\..\sdk\plactform\arch\ll\ll.h
 .\obj\uart2.o: ..\..\sdk\plactform\driver\reg\reg_access.h
-.\obj\uart2.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\uart2.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\string.h
 .\obj\uart2.o: ..\..\sdk\plactform\core_modules\common\api\co_utils.h
 .\obj\uart2.o: ..\..\sdk\plactform\core_modules\common\api\co_bt.h
 .\obj\uart2.o: ..\..\sdk\plactform\core_modules\common\api\co_lmp.h
@@ -40,7 +40,7 @@
 .\obj\uart2.o: ..\..\sdk\ble_stack\com\rwip\api\rwip.h
 .\obj\uart2.o: ..\..\sdk\ble_stack\inc\h4tl\h4tl.h
 .\obj\uart2.o: ..\..\sdk\ble_stack\inc\nvds\nvds.h
-.\obj\uart2.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\obj\uart2.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\uart2.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\obj\uart2.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\uart2.o: ..\..\sdk\ble_stack\inc\ea\ea.h
 .\obj\uart2.o: ..\..\sdk\plactform\core_modules\common\api\co_list.h

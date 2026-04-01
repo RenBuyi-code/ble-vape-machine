@@ -1,9 +1,9 @@
 .\obj\gpio.o: ..\..\sdk\plactform\driver\gpio\gpio.c
-.\obj\gpio.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\gpio.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
 .\obj\gpio.o: ..\..\sdk\plactform\arch\BK3432_reg.h
 .\obj\gpio.o: ..\..\sdk\plactform\driver\gpio\gpio.h
-.\obj\gpio.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\obj\gpio.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\gpio.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\gpio.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\gpio.o: ..\..\sdk\plactform\driver\timer\timer.h
 .\obj\gpio.o: ..\..\sdk\ble_stack\com\rwip\api\rwip.h
 .\obj\gpio.o: .\config\rwip_config.h
@@ -21,7 +21,7 @@
 .\obj\gpio.o: ..\..\sdk\plactform\arch\arch.h
 .\obj\gpio.o: ..\..\sdk\plactform\arch\ll\ll.h
 .\obj\gpio.o: ..\..\sdk\plactform\driver\reg\reg_access.h
-.\obj\gpio.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\gpio.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\string.h
 .\obj\gpio.o: ..\..\sdk\plactform\core_modules\common\api\co_utils.h
 .\obj\gpio.o: ..\..\sdk\plactform\core_modules\common\api\co_bt.h
 .\obj\gpio.o: ..\..\sdk\plactform\core_modules\common\api\co_lmp.h

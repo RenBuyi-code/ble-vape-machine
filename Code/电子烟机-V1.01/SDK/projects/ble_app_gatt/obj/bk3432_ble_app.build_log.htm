@@ -3,34 +3,63 @@
 <pre>
 <h1>礦ision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: μVision V5.38.0.0
-Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+IDE-Version: μVision V5.42.0.0
+Copyright (C) 2025 ARM Ltd and ARM Germany GmbH. All rights reserved.
 License Information: 1 000, 1, LIC=8MZI6-DHV9A-JPNZQ-NECZY-IHFEL-DW8C2
  
 Tool Versions:
-Toolchain:       MDK-ARM Professional  Version: 5.38.0.0
-Toolchain Path:  D:\IDE\keil\V5\ARM\ARMCLANG\bin\
-C Compiler:      ArmClang.exe V6.19
-Assembler:       Armasm.exe V6.19
-Linker/Locator:  ArmLink.exe V6.19
-Library Manager: ArmAr.exe V6.19
-Hex Converter:   FromElf.exe V6.19
-CPU DLL:         SARM.DLL V5.38.0.0
+Toolchain:       MDK-ARM Professional  Version: 5.42.0.0
+Toolchain Path:  D:\IDE\keil\V5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARM.DLL V5.42.0.0
 Dialog DLL:      DARMP3.DLL
 Target DLL:      Segger\JLTAgdi.dll V1.61.0.0
 Dialog DLL:      TARMP3.DLL V1.5.1.0
  
 <h2>Project:</h2>
-E:\BaiduSyncdisk\项目归档\6-电子烟机-电机式-KZ\程序\电子烟机-V1.01\SDK\projects\ble_app_gatt\bk3432.uvproj
-Project File Date:  08/16/2024
+E:\work\github\ble-vape-machine\Code\电子烟机-V1.01\SDK\projects\ble_app_gatt\bk3432.uvproj
+Project File Date:  04/01/2026
 
 <h2>Output:</h2>
-*** Target 'BK3432_app' uses ARM-Compiler 'V5.06 update 6 (build 750)' which is not available.
-*** Please review the installed ARM Compiler Versions:
-   'Manage Project Items - Folders/Extensions' to manage ARM Compiler Versions.
-   'Options for Target - Target' to select an ARM Compiler Version for the target.
-*** Build aborted.
-Build Time Elapsed:  00:00:00
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\IDE\keil\V5\ARM\ARMCC\Bin'
+Build target 'BK3432_app'
+compiling AT.c...
+..\..\libs\AT_Module\AT.c(155): warning:  #111-D: statement is unreachable
+      return ERR_NONE;
+..\..\libs\AT_Module\AT.c(304): warning:  #111-D: statement is unreachable
+      return ERR_NONE;
+..\..\libs\AT_Module\AT.c(328): warning:  #177-D: variable "len"  was declared but never referenced
+  	 uint16_t len = 0;
+..\..\libs\AT_Module\AT.c(330): warning:  #177-D: variable "time"  was declared but never referenced
+      uint32_t time = 0;
+..\..\libs\AT_Module\AT.c(23): warning:  #177-D: variable "AT_OOOK"  was declared but never referenced
+  static char AT_OOOK[] = "+OOOK:1\r\n\0";
+..\..\libs\AT_Module\AT.c: 5 warnings, 0 errors
+linking...
+Program Size: Code=37760 RO-data=1716 RW-data=304 ZI-data=10096  
+After Build - User command #1: fromelf --bin --output .\output\app\bk3432_ble_app.bin .\obj\bk3432_ble_app.axf
+After Build - User command #2: .\output\encrypt_app.bat
+E:\work\github\ble-vape-machine\Code\电子烟机-V1.01\SDK\projects\ble_app_gatt>.\output\BinConvert_3432.exe  -oad .\output\bim\bk3432_ble_bim.bin  .\output\stack\bk3432_ble_stack.bin  .\output\app\bk3432_ble_app.bin -m 0x1020 -l 0x17020 -v 0x004A -rom_v 0x000A -e 00000000 00000000 00000000 00000000 
+cmd_bin_oad.stack_file_addr :0x1020
+binary version hex:0x4a; dec:74
+Arm Image Binary will be converted to OAD format binary file.....
+cmd_bin_oad.stack_file_addr=1020
+boot_bin_len=fa0
+add stack bin start
+oad_stack_app_bin_len=1fc00
+oad_app_bin_len=9c00
+42 f4 46 4a 4a 00 00 27 42 42 42 42 ff ff 0a 00 /**< @CREATE_FILE_SUCCESS */
+/**< @Download flash file:.\output\app\bk3432_ble_app_merge.bin
+/**< @OAD file :.\output\app\bk3432_ble_app_stack.bin,CRC = 0x60802cad
+/**< @OAD file :.\output\app\bk3432_ble_app_app.bin,CRC = 0x4a46f442
+/**< @author <gang.cheng@bekencorp.com> */
+/**< @version v0.3 */
+".\obj\bk3432_ble_app.axf" - 0 Error(s), 5 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

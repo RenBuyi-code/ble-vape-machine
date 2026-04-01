@@ -1,8 +1,8 @@
 .\obj\app_motor.o: ..\..\libs\drv\app_motor.c
 .\obj\app_motor.o: ..\..\libs\drv\app_motor.h
-.\obj\app_motor.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\app_motor.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\app_motor.o: ..\..\sdk\plactform\driver\gpio\gpio.h
-.\obj\app_motor.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\app_motor.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\obj\app_motor.o: ..\..\sdk\plactform\arch\BK3432_reg.h
 .\obj\app_motor.o: ..\..\sdk\plactform\driver\uart2\uart2.h
 .\obj\app_motor.o: .\config\rwip_config.h

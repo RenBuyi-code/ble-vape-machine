@@ -1,7 +1,6 @@
 #include "AT.h"
 #include "uart.h"
 #include "tools.h"
-#include "password.h"
 #include "app_fff0.h"
 #include "drv_load.h"
 #include "ke_timer.h"
@@ -35,7 +34,7 @@ ERR_CODE at_outoput_cb(char* buffer)
 #if AT_TEST > 0u
     UART_PRINTF("at_outoput_cb\r\n");
 #endif
-    if((__sys_manager.authorization ==1 || uart_rx_done == 1 ) && __sys_manager.output_stat == 0)
+    if( uart_rx_done == 1  && __sys_manager.output_stat == 0)
     {
       
             __sys_manager.dial_number = (buffer[3]-48);
@@ -136,81 +135,6 @@ ERR_CODE at_charger_cb_chb(char* buffer)
 
 
 
-ERR_CODE at_password_cb(char* buffer)
-{
-
-    static unsigned char temp  =0 ;
-
-    temp = co_rand_byte();  //取最低字节
-    temp ^=0x67;
-
-    __sys_manager.private_key = temp;
-
-
-    password_get((char*)&buffer[3],(char*)&__sys_manager.current_password);
-    AT_OOOK[6] = temp;
-#if AT_TEST > 0u
-    UART_PRINTF("__sys_manager.private_key = %x\r\n",__sys_manager.private_key);
-    UART_PRINTF("encryption current_password:");
-
-    for(int i =0 ; i<12; i++)
-    {
-
-        UART_PRINTF("%X",__sys_manager.current_password[i]^(__sys_manager.private_key));
-
-    }
-    UART_PRINTF("\r\n");
-#endif
-
-#if AT_TEST > 0u
-    UART_PRINTF("ture current_password:");
-    for(int j =0 ; j<12; j++)
-    {
-        UART_PRINTF("%X",__sys_manager.current_password[j]);
-    }
-    UART_PRINTF("\r\n");
-#endif
-
-    app_fff1_send_lvl((uint8_t*)AT_OOOK,strlen(AT_OOOK));
-
-    return ERR_NONE;
-}
-
-
-unsigned char err_cnt = 0;
-unsigned char en_code[12]= {0,0,0,0,0,0,0,0,0,0,0};
-unsigned char pass[12]= {0,0,0,0,0,0,0,0,0,0,0};
-
-ERR_CODE at_oook_key_cb(char* buffer)
-{
-
-    uint8_t i =0;
-    wdt_feed(0x3FFF);
-    byte_cpy((unsigned char*)en_code,(unsigned char*)&buffer[6],12);
-
-
-
-    for(i=0; i<12; i++) //解密
-    {
-        buffer[i+6] = (en_code[i]^ __sys_manager.private_key)^ 0x67;
-
-    }
-
-    if((strstr((char*)buffer,__sys_manager.current_password)!=0))//密码正确
-    {
-        __sys_manager.authorization = 1;
-
-        app_fff1_send_lvl((uint8_t*)"IC\r\n\0",strlen("IC\r\n\0"));
-        UART_PRINTF("IC\r\n");
-
-    }
-    else
-    {
-        return  ERR_PW;
-    }
-
-    return ERR_NONE;
-}
 
 ERR_CODE at_em_cb(char* buffer)
 {
@@ -427,9 +351,9 @@ ERR_CODE at_set_cb(char* buffer)
 
 AT AT_Shell[SHELL_LEN]=
 {
-    {"+O:",at_outoput_cb},
-    {"+P:",at_password_cb},
-    {"+OOOK:",at_oook_key_cb},
+//    {"+O:",at_outoput_cb},
+//    {"+P:",at_password_cb},
+//    {"+OOOK:",at_oook_key_cb},
     {"+RST",at_restart_cb},
     {"+Z",at_set_mac_addres_cb},
     {"+S?",at_sleep_cb},
@@ -447,7 +371,7 @@ ERR_CODE at_traverse(char* buffer,AT at_shell[])
 {
     unsigned char i = 0;
     ERR_CODE  err_code =  ERR_NONE;
-
+   __sys_manager.authorization = 1; //不加密
     UART_PRINTF("at_traverse\r\n");
     //UART_PRINTF("----buffer = %s\r\n",buffer);
     //UART_PRINTF("----strlen = %d\r\n",strlen(buffer));

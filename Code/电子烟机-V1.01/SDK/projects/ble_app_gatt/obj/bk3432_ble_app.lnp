@@ -38,7 +38,6 @@
 ".\obj\app_uart.o"
 ".\obj\sys_manager.o"
 ".\obj\tools.o"
-".\obj\password.o"
 ".\obj\drv_charger.o"
 ".\obj\drv_load.o"
 ".\obj\drv_rgb.o"

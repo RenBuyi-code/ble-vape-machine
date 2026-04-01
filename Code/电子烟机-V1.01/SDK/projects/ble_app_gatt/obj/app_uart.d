@@ -1,9 +1,9 @@
 .\obj\app_uart.o: app\app_uart.c
 .\obj\app_uart.o: app\app_uart.h
-.\obj\app_uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\app_uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
 .\obj\app_uart.o: ..\..\sdk\plactform\driver\timer\timer.h
-.\obj\app_uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
-.\obj\app_uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\app_uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\app_uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\obj\app_uart.o: ..\..\sdk\plactform\driver\uart\uart.h
 .\obj\app_uart.o: .\config\rwip_config.h
 .\obj\app_uart.o: ..\..\sdk\ble_stack\com\rwble\rwble_config.h
@@ -19,7 +19,7 @@
 .\obj\app_uart.o: ..\..\sdk\plactform\arch\arch.h
 .\obj\app_uart.o: ..\..\sdk\plactform\arch\ll\ll.h
 .\obj\app_uart.o: ..\..\sdk\plactform\driver\reg\reg_access.h
-.\obj\app_uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\app_uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\string.h
 .\obj\app_uart.o: ..\..\sdk\plactform\core_modules\common\api\co_utils.h
 .\obj\app_uart.o: ..\..\sdk\plactform\core_modules\common\api\co_bt.h
 .\obj\app_uart.o: ..\..\sdk\plactform\core_modules\common\api\co_lmp.h

@@ -1,8 +1,8 @@
 .\obj\uart.o: ..\..\sdk\plactform\driver\uart\uart.c
-.\obj\uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
 .\obj\uart.o: ..\..\sdk\plactform\driver\timer\timer.h
-.\obj\uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
-.\obj\uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\obj\uart.o: ..\..\sdk\plactform\driver\uart\uart.h
 .\obj\uart.o: .\config\rwip_config.h
 .\obj\uart.o: ..\..\sdk\ble_stack\com\rwble\rwble_config.h
@@ -18,7 +18,7 @@
 .\obj\uart.o: ..\..\sdk\plactform\arch\arch.h
 .\obj\uart.o: ..\..\sdk\plactform\arch\ll\ll.h
 .\obj\uart.o: ..\..\sdk\plactform\driver\reg\reg_access.h
-.\obj\uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\string.h
 .\obj\uart.o: ..\..\sdk\plactform\core_modules\common\api\co_utils.h
 .\obj\uart.o: ..\..\sdk\plactform\core_modules\common\api\co_bt.h
 .\obj\uart.o: ..\..\sdk\plactform\core_modules\common\api\co_lmp.h
@@ -43,7 +43,7 @@
 .\obj\uart.o: ..\..\sdk\plactform\core_modules\dbg\api\dbg_swdiag.h
 .\obj\uart.o: ..\..\sdk\plactform\reg\reg_blecore.h
 .\obj\uart.o: ..\..\sdk\plactform\reg\_reg_blecore.h
-.\obj\uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\obj\uart.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\obj\uart.o: D:\IDE\keil\V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\uart.o: ..\..\sdk\ble_stack\inc\ea\ea.h
 .\obj\uart.o: ..\..\sdk\plactform\core_modules\common\api\co_list.h
