@@ -1,0 +1,590 @@
+
+
+/**
+ ****************************************************************************************
+ *
+ * @file arch_main.c
+ *
+ * @brief Main loop of the application.
+ *
+ * Copyright (C) RivieraWaves 2009-2015
+ *
+ *
+ ******** ********************************************************************************
+ */
+
+
+/*
+ * INCLUDES
+ ****************************************************************************************
+ */
+
+#include "rwip_config.h" // RW SW configuration
+
+#include "arch.h"      // architectural platform definitions
+#include <stdlib.h>    // standard lib functions
+#include <stddef.h>    // standard definitions
+#include <stdint.h>    // standard integer definition
+#include <stdbool.h>   // boolean definition
+#include "boot.h"      // boot definition
+#include "rwip.h"      // RW SW initialization
+#include "syscntl.h"   // System control initialization
+#include "emi.h"       // EMI initialization
+#include "intc.h"      // Interrupt initialization
+#include "timer.h"     // TIMER initialization
+#include "icu.h"
+#include "uart.h"      	// UART initialization
+#include "flash.h"      // Flash initialization
+#if (BLE_EMB_PRESENT || BT_EMB_PRESENT)
+#include "rf.h"        // RF initialization
+#endif // BLE_EMB_PRESENT || BT_EMB_PRESENT
+
+#if (BLE_APP_PRESENT)
+#include "app.h"       // application functions
+#endif // BLE_APP_PRESENT
+
+#if (NVDS_SUPPORT)
+#include "nvds.h"                    // NVDS Definitions
+#endif
+#include "reg_assert_mgr.h"
+#include "BK3432_reg.h"
+#include "RomCallFlash.h"
+#include "gpio.h"
+#include "pwm.h"
+#include "app_task.h"
+#include "ir.h"
+#include "oads.h"
+#include "wdt.h"
+#include "rtc.h"
+#include "user_config.h"
+#include "drv_load.h"
+#include "sys_manager.h"
+#include "drv_charger.h"
+#include "stdio.h"
+#include "app_uart.h"
+#include "ke_timer.h"
+#include "uart.h"
+#include "uart2.h"
+#include "tools.h"
+#include "drv_rgb.h"
+#include <string.h>
+
+
+/**
+ ****************************************************************************************
+ * @addtogroup DRIVERS
+ * @{
+ *
+ *
+ * ****************************************************************************************
+ */
+
+
+
+
+/*
+ * STRUCTURE DEFINITIONS
+ ****************************************************************************************
+ */
+
+// Creation of uart external interface api
+struct rwip_eif_api uart_api;
+
+/*
+ * LOCAL FUNCTION DECLARATIONS
+ ****************************************************************************************
+ */
+
+static void Stack_Integrity_Check(void);
+
+extern void code_sanity_check(void);
+
+
+void uart_rx_handler(uint8_t *buf, uint8_t len);
+
+
+#if ((UART_PRINTF_EN) &&(UART_DRIVER))
+void assert_err(const char *condition, const char * file, int line)
+{
+    uart_printf("%s,condition %s,file %s,line = %d\r\n",__func__,condition,file,line);
+}
+
+void assert_param(int param0, int param1, const char * file, int line)
+{
+    uart_printf("%s,param0 = %d,param1 = %d,file = %s,line = %d\r\n",__func__,param0,param1,file,line);
+
+}
+
+void assert_warn(int param0, int param1, const char * file, int line)
+{
+    uart_printf("%s,param0 = %d,param1 = %d,file = %s,line = %d\r\n",__func__,param0,param1,file,line);
+
+}
+
+void dump_data(uint8_t* data, uint16_t length)
+{
+    uart_printf("%s,data = %d,length = %d,file = %s,line = %d\r\n",__func__,data,length);
+
+}
+#else
+void assert_err(const char *condition, const char * file, int line)
+{
+
+}
+
+void assert_param(int param0, int param1, const char * file, int line)
+{
+
+}
+
+void assert_warn(int param0, int param1, const char * file, int line)
+{
+
+}
+
+void dump_data(uint8_t* data, uint16_t length)
+{
+
+}
+#endif //UART_PRINTF_EN
+
+
+/*
+ * EXPORTED FUNCTION DEFINITIONS
+ ****************************************************************************************
+ */
+
+
+void platform_reset(uint32_t error)
+{
+
+    UART_PRINTF("error = %x\r\n", error);
+
+    // Disable interrupts
+    GLOBAL_INT_STOP();
+
+    uart_finish_transfers();
+
+    if(error == RESET_AND_LOAD_FW || error == RESET_TO_ROM)
+    {
+
+    }
+    else
+    {
+        wdt_enable(10);
+        while(1);
+    }
+}
+
+
+void Reverse(char str[]) {
+    int n=strlen(str);
+    int i;
+    char temp;
+    for(i=0; i<(n/2); i++) {
+        temp=str[i];
+        str[i]=str[n-i-1];
+        str[n-i-1]=temp;
+    }
+}
+
+void bdaddr_env_init(void)
+{
+    struct bd_addr co_bdaddr;
+    char name[18];
+
+    Read_NVR_Flash(0x80,(uint8_t*)&__sys_manager.config.name_flag,1); /**查询蓝牙设备名称是否配置成功**/
+
+    if(__sys_manager.config.name_flag  == 0xFF)	/**尚未配置**/
+    {
+        flash_read(FLASH_SPACE_TYPE_MAIN, 0x27ff0/4, 6, &co_bdaddr.addr[0]);/**MAC流水号在固定地址**/
+
+        /**判断默认MAC地址是否写入**/
+        if(co_bdaddr.addr[0]!=0xff || co_bdaddr.addr[1]!=0xff || \
+                co_bdaddr.addr[2]!=0xff || co_bdaddr.addr[3]!=0xff || \
+                co_bdaddr.addr[4]!=0xff || co_bdaddr.addr[5]!=0xff )
+        {
+            memcpy(&co_default_bdaddr,&co_bdaddr,6);
+        }
+    }
+    else if(__sys_manager.config.name_flag == 1)
+    {   /**已通过扫码枪写入设备名称**/
+
+        Read_NVR_Flash(0x8080,(uint8_t*)&__sys_manager.config.ble_name,16);
+
+        memcpy(name,&__sys_manager.config.ble_name,16);
+
+        Reverse(name);/**将读出的数据逆序排列**/
+        UART_PRINTF("逆序 = %s\r\n",name);
+
+        StrToHex(co_default_bdaddr.addr,(uint8_t*)&name,24);/**因为写入是字符串故需要转换一下**/
+
+        UART_PRINTF("%02X:%02X:%02X:%02X:%02X:%02X\r\n",
+                    co_default_bdaddr.addr[5],
+                    co_default_bdaddr.addr[4],
+                    co_default_bdaddr.addr[3],
+                    co_default_bdaddr.addr[2],
+                    co_default_bdaddr.addr[1],
+                    co_default_bdaddr.addr[0]
+                   );
+
+        sprintf(__sys_manager.ble_mac_address,"%02X:%02X:%02X:%02X:%02X:%02X",
+                co_default_bdaddr.addr[5],
+                co_default_bdaddr.addr[4],
+                co_default_bdaddr.addr[3],
+                co_default_bdaddr.addr[2],
+                co_default_bdaddr.addr[1],
+                co_default_bdaddr.addr[0]
+               );
+    }
+}
+
+
+
+void ble_clk_enable(void)
+{
+    REG_AHB0_ICU_BLECLKCON =  0;
+}
+
+
+
+
+/**
+ *******************************************************************************
+ * @brief RW main function.
+ *
+ * This function is called right after the booting process has completed.
+ *
+ * @return status   exit status
+ *******************************************************************************
+ */
+#include "at.h"
+#include "adc.h"
+#include "utc_clock.h"
+
+#define KEY_OPEN_PIN GPIO_P17
+
+
+
+extern struct rom_env_tag rom_env;
+uint8_t adv_buffer[31];
+void rwip_eif_api_init(void);
+
+static uint8_t data= 0xF0;
+uint32_t gpio_set2(uint8_t gpio, uint8_t val);
+
+UTCTimeStruct utc_time;
+
+uint32_t cnt = 0;
+void drv_ws2812_test(uint8_t ch, uint32_t RGB_TABLE[],uint32_t len);
+uint32_t rgb_light_value[] = {0xFF00FF,0xFF00FF,0x8B008B,0xBA55D3,0x9400D3,0xDC143C};
+void motor_rest(void);
+void drv_ws2812_round(uint32_t rgb);
+
+void BLN_timer_handle(void);//10ms 调用一次
+void rw_main(void)
+{
+
+    /*
+     ***************************************************************************
+     * Platform initialization
+     ***************************************************************************
+     */
+#if SYSTEM_SLEEP
+    uint8_t sleep_type = 0;
+#endif
+    __sys_manager.err_code = ERR_NONE;
+    icu_init();
+    // Initialize random process
+    srand(1);
+
+    //get System sleep flag
+    system_sleep_init();
+
+    // Initialize the exchange memory interface
+    emi_init();
+
+    // Initialize timer module
+    timer_init();
+
+    rwip_eif_api_init();
+
+    // Initialize the Interrupt Controller
+    intc_init();
+    // Initialize UART component
+#if (UART_DRIVER)
+
+    gpio_sleep();
+	 
+    drv_ws2812_gpio_init();
+    gpio_config(GPIO_P01,INPUT,PULL_HIGH);
+    //gpio_config(GPIO_P16,OUTPUT,PULL_NONE);
+    uart_init(115200);
+    uart2_init(9600);
+
+    //gpio_config(KEY_OPEN_PIN,INPUT,PULL_HIGH);// P17 即RX引脚
+    uart_cb_register(uart_rx_handler);
+
+#endif
+
+
+#if PLF_NVDS
+    // Initialize NVDS module
+    struct nvds_env_tag env;
+    env.flash_read = &flash_read;
+    env.flash_write = &flash_write;
+    env.flash_erase = &flash_erase;
+    nvds_init(env);
+#endif
+
+    flash_init();
+    rom_env_init(&rom_env);
+    bdaddr_env_init();
+
+    /*
+      ***************************************************************************
+      * RW SW stack initialization
+      ***************************************************************************
+      */
+    //enable ble clock
+    ble_clk_enable();
+
+    // Initialize RW SW stack
+    rwip_init(0);
+
+    sprintf(__sys_manager.ble_mac_address,"%02X%02X%02X%02X%02X%02X",
+            co_default_bdaddr.addr[5],
+            co_default_bdaddr.addr[4],
+            co_default_bdaddr.addr[3],
+            co_default_bdaddr.addr[2],
+            co_default_bdaddr.addr[1],
+            co_default_bdaddr.addr[0]
+           );
+
+    UART_PRINTF("\r\n __sys_manager.ble_mac_address = %s\r\n",__sys_manager.ble_mac_address);
+
+    if(__sys_manager.config.name_flag == 1)//配置好了 进入低功耗休眠
+    {
+
+        icu_set_sleep_mode(0);
+        rwip_prevent_sleep_clear(BK_DRIVER_TIMER_ACTIVE);//必须设置
+    }
+    else if(__sys_manager.config.name_flag == 255)//还没配置好 不要进入低功耗休眠
+    {
+        icu_set_sleep_mode(1);
+        rwip_prevent_sleep_set(BK_DRIVER_TIMER_ACTIVE);//必须设置
+    }
+
+
+    REG_AHB0_ICU_INT_ENABLE |= (0x01 << 15); //BLE INT
+    REG_AHB0_ICU_IRQ_ENABLE = 0x03;
+    // finally start interrupt handling
+    GLOBAL_INT_START();
+
+    {   /*****引脚初始化*****/
+        gpio_config(LED_GPIO,OUTPUT,PULL_NONE);
+        gpio_config(GPIO_P34,FLOAT,PULL_NONE);
+        hal_led_open();
+    }
+
+    UART_PRINTF("\r\n");
+    UART_PRINTF("start\r\n");
+
+
+    {   //灯光初始化
+		 
+        //drv_ws2812_set_color(0,0);
+		  //Delay_ms(50);
+        //drv_ws2812_set_color(0,0);
+		 // motor_rest();
+		 //drv_ws2812_set_color(0,0x230033);
+		  //drv_ws2812_round(0x330909);
+		 
+        {   //系统时间初始化
+//        __sys_manager.time = 43200;
+//        __sys_manager.wake_time_1 = 43200;
+//        __sys_manager.wake_time_2 = (43200+30);
+        }
+
+
+        /*
+         ***************************************************************************
+         * Main loop
+         ***************************************************************************
+         */
+        while(1)
+        {
+
+            rwip_schedule(); //系统调度
+            
+			    //wdt_disable();
+			    //BLN_timer_handle();
+			  
+			   if(__sys_manager.ble_msg_recv == 1)
+				{
+				   __sys_manager.ble_msg_recv = 0;			 
+				   __sys_manager.err_code =  at_traverse(__sys_manager.ble_buffer,AT_Shell);
+				   error_event_report();					
+				}
+            if(uart_rx_done == 1)//等待接收完成 休眠后按住 测试按即可重新写入
+            {
+                at_traverse((char*)uart_buffer.buffer,AT_Shell);
+                uart_rx_done = 0;
+            }
+
+            /***********************************************************************/
+            GLOBAL_INT_DISABLE();
+            oad_updating_user_section_pro();
+			
+            if(wdt_disable_flag==1)//实际上没用 根本没进入
+            {
+                UART_PRINTF("-wdt_disable_flag ==1\r\n");
+                wdt_disable();
+                if(REG_AHB0_ICU_WDTCLKCON == 0)
+                {
+                    UART_PRINTF("------------------------WDT EN\r\n");
+                }
+                else if(REG_AHB0_ICU_WDTCLKCON == 1)
+                {
+                    UART_PRINTF("------------------------WDT DIS\r\n");
+                }
+            }
+#if SYSTEM_SLEEP //这部分不要改动
+            {
+                // Check if the processor clock can be gated
+                sleep_type = rwip_sleep();
+                if((sleep_type & RW_MCU_DEEP_SLEEP) == RW_MCU_DEEP_SLEEP)
+                {
+                    // 1:idel  0:reduce voltage
+                    if(icu_get_sleep_mode())
+                    {
+                        cpu_idle_sleep();
+                    }
+                    else // icu_set_sleep_mode(0);进入这里
+                    {
+                        cpu_reduce_voltage_sleep();
+                    }
+                }
+                else if((sleep_type & RW_MCU_IDLE_SLEEP) == RW_MCU_IDLE_SLEEP)//icu_set_sleep_mode(1);进入这里
+                {
+                    cpu_idle_sleep();
+                }
+            }
+#endif
+            Stack_Integrity_Check();
+            GLOBAL_INT_RESTORE();
+            /***********************************************************************/
+
+        }
+    }
+}
+
+
+void uart_rx_handler(uint8_t *buf, uint8_t len)
+{
+    get_data_to_uart_buffer(buf,len);
+}
+
+
+void rwip_eif_api_init(void)
+{
+    uart_api.read = &uart_read;
+    uart_api.write = &uart_write;
+    uart_api.flow_on = &uart_flow_on;
+    uart_api.flow_off = &uart_flow_off;
+}
+
+const struct rwip_eif_api* rwip_eif_get(uint8_t type)
+{
+    const struct rwip_eif_api* ret = NULL;
+    switch(type)
+    {
+    case RWIP_EIF_AHI:
+    {
+        ret = &uart_api;
+    }
+    break;
+#if (BLE_EMB_PRESENT) || (BT_EMB_PRESENT)
+    case RWIP_EIF_HCIC:
+    {
+        ret = &uart_api;
+    }
+    break;
+#elif !(BLE_EMB_PRESENT) || !(BT_EMB_PRESENT)
+    case RWIP_EIF_HCIH:
+    {
+        ret = &uart_api;
+    }
+    break;
+#endif
+    default:
+    {
+        ASSERT_INFO(0, type, 0);
+    }
+    break;
+    }
+    return ret;
+}
+
+static void Stack_Integrity_Check(void)
+{
+    if ((REG_PL_RD(STACK_BASE_UNUSED)!= BOOT_PATTERN_UNUSED))
+    {
+        while(1)
+        {
+            uart_putchar("Stack_Integrity_Check STACK_BASE_UNUSED fail!\r\n");
+        }
+    }
+
+    if ((REG_PL_RD(STACK_BASE_SVC)!= BOOT_PATTERN_SVC))
+    {
+        while(1)
+        {
+            uart_putchar("Stack_Integrity_Check STACK_BASE_SVC fail!\r\n");
+        }
+    }
+
+    if ((REG_PL_RD(STACK_BASE_FIQ)!= BOOT_PATTERN_FIQ))
+    {
+        while(1)
+        {
+            uart_putchar("Stack_Integrity_Check STACK_BASE_FIQ fail!\r\n");
+        }
+    }
+
+    if ((REG_PL_RD(STACK_BASE_IRQ)!= BOOT_PATTERN_IRQ))
+    {
+        while(1)
+        {
+            uart_putchar("Stack_Integrity_Check STACK_BASE_IRQ fail!\r\n");
+        }
+    }
+
+}
+
+
+void rom_env_init(struct rom_env_tag *api)
+{
+    memset(&rom_env,0,sizeof(struct rom_env_tag));
+    rom_env.prf_get_id_from_task = prf_get_id_from_task;
+    rom_env.prf_get_task_from_id = prf_get_task_from_id;
+    rom_env.prf_init = prf_init;
+    rom_env.prf_create = prf_create;
+    rom_env.prf_cleanup = prf_cleanup;
+    rom_env.prf_add_profile = prf_add_profile;
+    rom_env.rwble_hl_reset = rwble_hl_reset;
+    rom_env.rwip_reset = rwip_reset;
+#if SYSTEM_SLEEP
+    rom_env.rwip_prevent_sleep_set = rwip_prevent_sleep_set;
+    rom_env.rwip_prevent_sleep_clear = rwip_prevent_sleep_clear;
+    rom_env.rwip_sleep_lpcycles_2_us = rwip_sleep_lpcycles_2_us;
+    rom_env.rwip_us_2_lpcycles = rwip_us_2_lpcycles;
+    rom_env.rwip_wakeup_delay_set = rwip_wakeup_delay_set;
+#endif
+    rom_env.platform_reset = platform_reset;
+    rom_env.assert_err = assert_err;
+    rom_env.assert_param = assert_param;
+    rom_env.Read_Uart_Buf = Read_Uart_Buf;
+    rom_env.uart_clear_rxfifo = uart_clear_rxfifo;
+}
+

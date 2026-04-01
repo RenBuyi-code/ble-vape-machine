@@ -1,0 +1,16 @@
+.\obj\drcoexgen.o: ..\..\sdk\plactform\driver\coex\drcoexgen.c
+.\obj\drcoexgen.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\drcoexgen.o: ..\..\sdk\plactform\core_modules\common\api\co_bt.h
+.\obj\drcoexgen.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\drcoexgen.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\drcoexgen.o: ..\..\sdk\plactform\core_modules\common\api\co_lmp.h
+.\obj\drcoexgen.o: ..\..\sdk\plactform\core_modules\common\api\co_bt.h
+.\obj\drcoexgen.o: ..\..\sdk\plactform\core_modules\common\api\co_hci.h
+.\obj\drcoexgen.o: .\config\rwip_config.h
+.\obj\drcoexgen.o: ..\..\sdk\ble_stack\com\rwble\rwble_config.h
+.\obj\drcoexgen.o: .\config\rwip_config.h
+.\obj\drcoexgen.o: ..\..\sdk\ble_stack\com\rwble_hl\rwble_hl_config.h
+.\obj\drcoexgen.o: ..\..\sdk\ble_stack\com\rwble_hl\rwble_hl_error.h
+.\obj\drcoexgen.o: .\config\rwprf_config.h
+.\obj\drcoexgen.o: ..\..\sdk\plactform\arch\compiler\compiler.h
+.\obj\drcoexgen.o: ..\..\sdk\plactform\core_modules\common\api\co_error.h

@@ -1,0 +1,15 @@
+.\obj\drv_load.o: ..\..\libs\drv\drv_load.c
+.\obj\drv_load.o: ..\..\libs\drv\drv_load.h
+.\obj\drv_load.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\drv_load.o: ..\..\sdk\plactform\arch\BK3432_reg.h
+.\obj\drv_load.o: ..\..\sdk\plactform\driver\gpio\gpio.h
+.\obj\drv_load.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\drv_load.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\drv_load.o: ..\..\sdk\plactform\driver\uart\uart.h
+.\obj\drv_load.o: .\config\rwip_config.h
+.\obj\drv_load.o: ..\..\sdk\ble_stack\com\rwble\rwble_config.h
+.\obj\drv_load.o: .\config\rwip_config.h
+.\obj\drv_load.o: ..\..\sdk\ble_stack\com\rwble_hl\rwble_hl_config.h
+.\obj\drv_load.o: ..\..\sdk\ble_stack\com\rwble_hl\rwble_hl_error.h
+.\obj\drv_load.o: .\config\rwprf_config.h
+.\obj\drv_load.o: .\config\user_config.h

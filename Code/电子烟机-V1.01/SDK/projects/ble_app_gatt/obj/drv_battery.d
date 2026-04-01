@@ -1,0 +1,9 @@
+.\obj\drv_battery.o: ..\..\libs\drv\drv_battery.c
+.\obj\drv_battery.o: ..\..\libs\drv\drv_battery.h
+.\obj\drv_battery.o: ..\..\sdk\plactform\driver\adc\adc.h
+.\obj\drv_battery.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\obj\drv_battery.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\drv_battery.o: ..\..\libs\drv\drv_load.h
+.\obj\drv_battery.o: D:\IDE\Keil\V5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\drv_battery.o: ..\..\sdk\plactform\arch\BK3432_reg.h
+.\obj\drv_battery.o: ..\..\sdk\plactform\driver\gpio\gpio.h
