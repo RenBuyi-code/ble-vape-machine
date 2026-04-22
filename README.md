@@ -58,7 +58,7 @@ Code/
 1. Open `Code/电子烟机-V1.01/SDK/projects/ble_app_gatt/bk3432.uvproj` in Keil MDK-ARM
 2. Select target configuration
 3. Build the project (F7)
-4. Flash to BK3432 via J-Link or UART
+4. Flash to BK3432 via UART
 
 ## License
 
