@@ -12,8 +12,8 @@ This is a BLE (Bluetooth Low Energy) based vape machine control system firmware,
 
 ## Features
 
-- **BLE 4.2/5.0 Connectivity**: Based on Beken BK3432 BLE SoC
-- **Motor Control**: Supports up to 10 channels (1-5 for rotary machines, 1-10 for grid machines)
+- **BLE 4.2 Connectivity**: Based on Beken BK3432 BLE SoC
+- **Motor Control**: Supports 1 channels 
 - **Battery Management**: Real-time voltage monitoring and low battery protection
 - **Charging Control**: Hardware charging enable/disable control
 - **RGB LED Effects**: WS2812 RGB LED strip support with configurable colors
