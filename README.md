@@ -23,7 +23,7 @@ This is a BLE (Bluetooth Low Energy) based vape machine control system firmware,
 
 ## Hardware Platform
 
-- **MCU**: Beken BK3432 (ARM Cortex-M4)
+- **MCU**: Beken BK3432 
 - **Development Environment**: Keil MDK-ARM
 - **BLE Stack**: RivieraWaves BLE Stack
 
