@@ -69,6 +69,11 @@ void switch_clk(uint8_t clk);
 
 void drv_ws2812_set_color(uint8_t ch, unsigned long RGB)
 {
+    if(ch >= (sizeof(rgb_io_pin)/sizeof(rgb_io_pin[0])))
+    {
+        return;
+    }
+
     unsigned long GRB = 0;
     unsigned char i =0;
     unsigned char k=0;
