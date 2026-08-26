@@ -220,8 +220,15 @@ static int fff1_writer_req_handler(ke_msg_id_t const msgid,
     ke_timer_clear(APP_BLE_DISC_TIMER,TASK_APP);//先清除
     ke_timer_set(APP_BLE_DISC_TIMER,TASK_APP,BLE_CONNECT_MAX_TIMEOUT);//有数据下来先不要那么快断
 
-    memset(__sys_manager.ble_buffer,0,64);
-    memcpy(__sys_manager.ble_buffer,(char*)param->fff2_value,param->length);
+    uint16_t copy_len = param->length;
+
+    if(copy_len > (sizeof(__sys_manager.ble_buffer) - 1))
+    {
+        copy_len = sizeof(__sys_manager.ble_buffer) - 1;
+    }
+
+    memset(__sys_manager.ble_buffer,0,sizeof(__sys_manager.ble_buffer));
+    memcpy(__sys_manager.ble_buffer,(char*)param->fff2_value,copy_len);
     __sys_manager.ble_msg_recv = 1;
 
     return (KE_MSG_CONSUMED);

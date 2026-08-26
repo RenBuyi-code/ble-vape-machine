@@ -36,7 +36,11 @@ ERR_CODE at_outoput_cb(char* buffer)
 #endif
     if( uart_rx_done == 1  && __sys_manager.output_stat == 0)
     {
-      
+            if(strlen(buffer) < 4 || !isdigit((unsigned char)buffer[3]))
+            {
+                return ERR_NONENTITY;
+            }
+
             __sys_manager.dial_number = (buffer[3]-48);
 		 
 			    UART_PRINTF("__sys_manager.dial_number = %d\r\n",__sys_manager.dial_number);
@@ -85,6 +89,11 @@ ERR_CODE at_charger_cb(char* buffer)
     {
         return ERR_UNAUTHORIZED;
     }
+    if(strlen(buffer) < 6 || !isdigit((unsigned char)buffer[5]))
+    {
+        return ERR_NONENTITY;
+    }
+
     buffer[5] -= 48;
     if(buffer[5] > 8)buffer[5] = 8; //最多10个小时
     __sys_manager.charger_cnt = ((unsigned int)buffer[5])*3600; // 以小时为计数 软件定时器没那么准 给多几秒
@@ -117,6 +126,10 @@ ERR_CODE at_charger_cb_chb(char* buffer)
     }
 
     len = strlen(buffer);
+    if(len < 6)
+    {
+        return ERR_NONENTITY;
+    }
     len -=5;
     p_str = buffer+5;
     time = atoi(p_str);
@@ -262,14 +275,15 @@ ERR_CODE at_vol_get_cb(char* buffer)
 {
     uint16_t vol = 0;
     uint8_t data[20];
-    memset(data,20,0);
     uint8_t len = 0;
+
+    memset(data,0,sizeof(data));
 
     vol = (( (adc_get_value(4)*1000) /1023  )*1050)/1000;
     vol*=6.5;
 
     vol =  0.0000011556 * vol + 1.0854017010 *vol - 455.2749756; //拟合 110K 并 20K 范围6.5 - 2.2V
-    sprintf((char*)data,"V:%d\r\n",vol);
+    snprintf((char*)data,sizeof(data),"V:%d\r\n",vol);
     len = strlen((char*)data);
     app_fff1_send_lvl(data,len);
 
@@ -310,11 +324,17 @@ ERR_CODE at_del_cfg(char* buffer)
 ERR_CODE rgb_test(char* buffer)
 {
 	 uint8_t ch=0;
-	 char rgb_string[6];
-	
+	 char rgb_string[9];
+
+	 if(strlen(buffer) < 13 || !isdigit((unsigned char)buffer[4]))
+	 {
+		 return ERR_NONENTITY;
+	 }
+
 	 ch =buffer[4]-48;
-	
-	 memcpy(rgb_string,&buffer[5],8);	
+
+	 memcpy(rgb_string,&buffer[5],sizeof(rgb_string) - 1);
+	 rgb_string[sizeof(rgb_string) - 1] = '\0';
 	
 
 	 drv_ws2812_set_color(ch,strtoul(rgb_string,0,0));	
@@ -325,12 +345,12 @@ ERR_CODE rgb_test(char* buffer)
 
 ERR_CODE at_st_cb(char* buffer)
 {
-	 uint16_t len = 0;
-    char *p_str = NULL;
-    uint32_t time = 0;
+    if(strlen(buffer) < 5)
+    {
+        return ERR_NONENTITY;
+    }
 
-	 	
-    __sys_manager.time = atoi(p_str+4);
+    __sys_manager.time = atoi(buffer+4);
 	 UART_PRINTF("__sys_manager.time = %d\r\n",__sys_manager.time);
     return ERR_NONE;
 }
