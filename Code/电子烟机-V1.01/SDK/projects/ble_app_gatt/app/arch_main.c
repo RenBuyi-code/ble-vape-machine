@@ -428,7 +428,8 @@ void rw_main(void)
 				}
             if(uart_rx_done == 1)//等待接收完成 休眠后按住 测试按即可重新写入
             {
-                at_traverse((char*)uart_buffer.buffer,AT_Shell);
+                __sys_manager.err_code = at_traverse((char*)uart_buffer.buffer,AT_Shell);
+                error_event_report();
                 uart_rx_done = 0;
             }
 

@@ -6,7 +6,7 @@
 #include "uart2.h"
 
 
-void motor_send_msg(uint8_t number);
+uint8_t motor_send_msg(uint8_t number); //0 失败 1 成功
 uint8_t motor_receive(void);
 
 #endif

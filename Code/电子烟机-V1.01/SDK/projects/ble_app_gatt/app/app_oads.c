@@ -57,6 +57,8 @@
  */
 
 /// braces Application Module Environment Structure
+#define OAD_IMG_HDR_MIN_LEN 16 //oad 头部需要的最小长度
+
 struct app_oads_env_tag app_oads_env;
 
 
@@ -173,7 +175,16 @@ static int app_ffc1_writer_req_handler(ke_msg_id_t const msgid,
 
     UART_PRINTF("%s\r\n",__func__);
 
-    oadImgIdentifyWrite(0x0, param->length,param->data );
+    if(param->length < OAD_IMG_HDR_MIN_LEN) //头部不完整 不能继续解析
+    {
+        UART_PRINTF("oad img identify too short : %d\r\n",param->length);
+        return (KE_MSG_CONSUMED);
+    }
+
+    if(oadImgIdentifyWrite(0x0, param->length,param->data ) != 0x00)
+    {
+        UART_PRINTF("oad img identify rejected\r\n");
+    }
 
 
 

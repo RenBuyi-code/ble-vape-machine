@@ -74,6 +74,11 @@ void drv_ws2812_set_color(uint8_t ch, unsigned long RGB)
     unsigned char k=0;
     unsigned long Dat = 0;
 
+    if(ch > 1) //只有两路灯 越界的通道号会读到未初始化的引脚
+    {
+        UART_PRINTF("drv_ws2812_set_color: bad ch = %d\r\n",ch);
+        return;
+    }
 
     switch_clk(2); //切换到64M
     //Delay_ms(10);
