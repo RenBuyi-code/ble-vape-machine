@@ -1,0 +1,4 @@
+Code/*/SDK/tests/build/
+*.gcda
+*.gcno
+*.gcov
