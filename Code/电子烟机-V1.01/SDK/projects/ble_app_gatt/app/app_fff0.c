@@ -31,6 +31,7 @@
 #include <string.h>
 #include "app_fff0.h"              // Battery Application Module Definitions
 #include "app.h"                    // Application Definitions
+#include "app_profile_utils.h"
 #include "app_task.h"             // application task definitions
 #include "Fff0s_task.h"           // health thermometer functions
 #include "co_bt.h"
@@ -75,15 +76,8 @@ void app_fff0_add_fff0s(void)
 
     struct fff0s_db_cfg *db_cfg;
 
-    struct gapm_profile_task_add_cmd *req = KE_MSG_ALLOC_DYN(GAPM_PROFILE_TASK_ADD_CMD,
-                                            TASK_GAPM, TASK_APP,
-                                            gapm_profile_task_add_cmd, sizeof(struct fff0s_db_cfg));
-    // Fill message
-    req->operation = GAPM_PROFILE_TASK_ADD;
-    req->sec_lvl =   0;
-    req->prf_task_id = TASK_ID_FFF0S;
-    req->app_task = TASK_APP;
-    req->start_hdl = 0; //req->start_hdl = 0; dynamically allocated
+    struct gapm_profile_task_add_cmd *req =
+        app_profile_add_cmd_alloc(TASK_ID_FFF0S, sizeof(struct fff0s_db_cfg));
 
 
     // Set parameters
@@ -273,5 +267,4 @@ const struct ke_msg_handler app_fff0_msg_handler_list[] =
 
 const struct ke_state_handler app_fff0_table_handler =
 {&app_fff0_msg_handler_list[0], (sizeof(app_fff0_msg_handler_list)/sizeof(struct ke_msg_handler))};
-
 
