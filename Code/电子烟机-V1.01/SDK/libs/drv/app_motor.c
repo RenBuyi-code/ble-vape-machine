@@ -17,9 +17,16 @@ uint8_t position_table[7]={
 									};
 
 									
-void motor_send_msg(uint8_t number)
+uint8_t motor_send_msg(uint8_t number)
 {	
+	if(number >= (sizeof(position_table)/sizeof(position_table[0])))
+	{
+		return 0; //没有对应的位置
+	}
+
 	uart2_send(&position_table[number],1); //只需要一个字节就可以控制
+
+	return 1;
 }
 
 void motor_rest(void)

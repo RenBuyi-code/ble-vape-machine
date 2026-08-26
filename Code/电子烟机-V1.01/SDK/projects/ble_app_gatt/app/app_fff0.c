@@ -109,6 +109,10 @@ void app_fff1_send_lvl(uint8_t* buf, uint8_t len)
                                             TASK_APP,
                                             fff0s_fff1_level_upd_req);
     // Fill in the parameter structure
+    if(len > FFF0_FFF1_DATA_LEN) //超长的数据会溢出消息缓冲区
+    {
+        len = FFF0_FFF1_DATA_LEN;
+    }
     req->length = len;
     memcpy(req->fff1_level, buf, len);
 
@@ -220,8 +224,15 @@ static int fff1_writer_req_handler(ke_msg_id_t const msgid,
     ke_timer_clear(APP_BLE_DISC_TIMER,TASK_APP);//先清除
     ke_timer_set(APP_BLE_DISC_TIMER,TASK_APP,BLE_CONNECT_MAX_TIMEOUT);//有数据下来先不要那么快断
 
-    memset(__sys_manager.ble_buffer,0,64);
-    memcpy(__sys_manager.ble_buffer,(char*)param->fff2_value,param->length);
+    uint16_t len = param->length;
+    if(len > (sizeof(__sys_manager.ble_buffer)-1)) //保证缓冲区不溢出且以0结尾
+    {
+        len = sizeof(__sys_manager.ble_buffer)-1;
+        UART_PRINTF("FFF1 write truncated to %d bytes\r\n",len);
+    }
+
+    memset(__sys_manager.ble_buffer,0,sizeof(__sys_manager.ble_buffer));
+    memcpy(__sys_manager.ble_buffer,(char*)param->fff2_value,len);
     __sys_manager.ble_msg_recv = 1;
 
     return (KE_MSG_CONSUMED);

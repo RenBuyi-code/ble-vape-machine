@@ -49,6 +49,7 @@
 #include "drv_charger.h"
 #include "drv_battery.h"
 #include "drv_rgb.h"
+#include "at.h"
 
 
 static uint16_t vbat_vol=0;
@@ -95,7 +96,16 @@ static int app_load_close_timer_handler(ke_msg_id_t const msgid,
                                         ke_task_id_t const src_id)
 {
 
-    hal_load_close(__sys_manager.dial_number);
+    if(hal_load_close(__sys_manager.dial_number) == 0) //货道编号非法 负载没有被关闭
+    {
+        UART_PRINTF("close load failed = %d\r\n",__sys_manager.dial_number);
+        __sys_manager.dial_number = 0;
+        __sys_manager.authorization = 0;
+        __sys_manager.err_code = ERR_NONENTITY;
+        error_event_report();
+
+        return KE_MSG_CONSUMED;
+    }
     UART_PRINTF("close load  = %d\r\n",__sys_manager.dial_number);
 
 

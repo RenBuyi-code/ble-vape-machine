@@ -18,7 +18,10 @@ typedef enum
  ERR_VOL=1009,            //欠压或者电压过高 不允许充电  9 
  ERR_NONENTITY=1010,  	  //货道不存在            6
  ERR_NAME_LEN =1011,  	  //名称长度错误          6
- ERR_BATTERY = 1012		  //电池电量疑似不足
+ ERR_BATTERY = 1012,		  //电池电量疑似不足
+ ERR_CMD_UNKNOWN = 1013,  //未识别的命令
+ ERR_PARAM = 1014,        //命令参数错误
+ ERR_FLASH = 1015         //配置写入失败
 }ERR_CODE;
 
 

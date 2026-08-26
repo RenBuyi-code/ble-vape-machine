@@ -20,6 +20,10 @@
 
 #define AT_TEST 1
 
+#define MAX_CHARGER_TIME_SEC  (10u*3600u) //最长充电时间 10小时
+#define RGB_STRING_LEN        8           //RGB 颜色字符长度 如 0xFF00FF
+#define RGB_CHANNEL_NUMBER    2           //RGB 通道数量
+
 static char AT_OOOK[] = "+OOOK:1\r\n\0";
 
 
@@ -46,7 +50,11 @@ ERR_CODE at_outoput_cb(char* buffer)
 					   uart2_init(9600);	
 						__sys_manager.output_stat = 1;
                   wdt_feed(0x3FFF);
-					   motor_send_msg(__sys_manager.dial_number);						
+					   if(motor_send_msg(__sys_manager.dial_number) == 0)
+						{
+							__sys_manager.output_stat = 0;
+							return ERR_NONENTITY; //货道不存在
+						}						
 						Delay_ms(1);	
 						//gpio_config(GPIO_P16,INPUT,PULL_HIGH);
 //					   while(1)
@@ -117,12 +125,21 @@ ERR_CODE at_charger_cb_chb(char* buffer)
     }
 
     len = strlen(buffer);
+    if(len <= 5)
+    {
+        return ERR_PARAM;
+    }
     len -=5;
     p_str = buffer+5;
     time = atoi(p_str);
     UART_PRINTF("len = %d\r\n",len);
     UART_PRINTF("buffer = %s\r\n",p_str);
     UART_PRINTF("time s = %d sec\r\n",time);
+
+    if(time == 0 || time > MAX_CHARGER_TIME_SEC) //0 或者超过上限的充电时间无效
+    {
+        return ERR_PARAM;
+    }
 
     hal_charger_pw_open();
 
@@ -169,33 +186,38 @@ ERR_CODE at_factory_cb(char* buffer)
 
 }
 
-uint32_t cut_buffer_decimal_number(char *dst,char *src,uint32_t src_len)  //截取10进制数字符
+uint32_t cut_buffer_decimal_number(char *dst,uint32_t dst_len,char *src,uint32_t src_len)  //截取10进制数字符
 {
     int i =0;
     uint32_t len =0;
 
     for(i=0; i<src_len; i++)
     {
-        if(isdigit(*src) && *src != NULL)
+        if(*src == '\0')
         {
+            break;
+        }
+        if(isdigit((unsigned char)*src))
+        {
+            if(len >= dst_len) //目标缓冲区已满 不再写入
+            {
+                break;
+            }
             *dst = *src;
             UART_PRINTF("dst = %c\r\n",*dst);
             dst++;
-            src++;
             len++;
         }
-        else
-        {
-            src++;
-        }
-
+        src++;
     }
+    *dst = '\0'; //dst_len 不含结束符
     return len;
 }
 
 ERR_CODE at_set_mac_addres_cb(char* buffer)
 {
-    __sys_manager.ble_name_len = cut_buffer_decimal_number(__sys_manager.config.ble_name,buffer,18);
+    __sys_manager.ble_name_len = cut_buffer_decimal_number(__sys_manager.config.ble_name,
+                                 sizeof(__sys_manager.config.ble_name)-1,buffer,18);
     if(__sys_manager.ble_name_len != 16)
     {
         uart_printf("Write failed\r\n");
@@ -234,18 +256,21 @@ ERR_CODE at_set_mac_addres_cb(char* buffer)
             {
                 uart_printf("Write failed\r\n");
                 app_fff1_send_lvl((uint8_t*)"Write failed\r\n\0",strlen("Write failed\r\n\0"));
+                return ERR_FLASH;
             }
         }
         else
         {
             uart_printf("Write failed\r\n");
             app_fff1_send_lvl((uint8_t*)"Write failed\r\n\0",strlen("Write failed\r\n\0"));
+            return ERR_FLASH;
         }
     }
     else
     {
         uart_printf("Write failed\r\n");
         app_fff1_send_lvl((uint8_t*)"Write failed\r\n\0",strlen("Write failed\r\n\0"));
+        return ERR_UNAUTHORIZED;
     }
 
     return ERR_NONE;
@@ -310,14 +335,31 @@ ERR_CODE at_del_cfg(char* buffer)
 ERR_CODE rgb_test(char* buffer)
 {
 	 uint8_t ch=0;
-	 char rgb_string[6];
+	 char rgb_string[RGB_STRING_LEN+1];
+	 char *end = NULL;
+	 unsigned long rgb = 0;
+	
+	 if(strlen(buffer) < (5+RGB_STRING_LEN))
+	 {
+		 return ERR_PARAM;
+	 }
 	
 	 ch =buffer[4]-48;
+	 if(ch >= RGB_CHANNEL_NUMBER)
+	 {
+		 return ERR_NONENTITY; //通道不存在
+	 }
 	
-	 memcpy(rgb_string,&buffer[5],8);	
+	 memcpy(rgb_string,&buffer[5],RGB_STRING_LEN);
+	 rgb_string[RGB_STRING_LEN] = '\0';
 	
+	 rgb = strtoul(rgb_string,&end,0);
+	 if(end == rgb_string) //没有解析到任何有效的颜色字符
+	 {
+		 return ERR_PARAM;
+	 }
 
-	 drv_ws2812_set_color(ch,strtoul(rgb_string,0,0));	
+	 drv_ws2812_set_color(ch,rgb);	
 
     return ERR_NONE;
 }
@@ -325,12 +367,24 @@ ERR_CODE rgb_test(char* buffer)
 
 ERR_CODE at_st_cb(char* buffer)
 {
-	 uint16_t len = 0;
     char *p_str = NULL;
-    uint32_t time = 0;
 
-	 	
-    __sys_manager.time = atoi(p_str+4);
+    if(strlen(buffer) <= 4)
+    {
+        return ERR_PARAM;
+    }
+
+    p_str = buffer+4;
+    while(*p_str != '\0' && !isdigit((unsigned char)*p_str)) //+ST: +SST: +SET: 前缀长度不同
+    {
+        p_str++;
+    }
+    if(*p_str == '\0')
+    {
+        return ERR_PARAM;
+    }
+
+    __sys_manager.time = atoi(p_str);
 	 UART_PRINTF("__sys_manager.time = %d\r\n",__sys_manager.time);
     return ERR_NONE;
 }
@@ -376,11 +430,22 @@ ERR_CODE at_traverse(char* buffer,AT at_shell[])
     //UART_PRINTF("----buffer = %s\r\n",buffer);
     //UART_PRINTF("----strlen = %d\r\n",strlen(buffer));
 
+    if(buffer == NULL)
+    {
+        return ERR_PARAM;
+    }
+
+    err_code = ERR_CMD_UNKNOWN;
+
     for(i = 0 ; i < SHELL_LEN ; i++)
     {
 #if AT_TEST>0
         UART_PRINTF("at_traverse i=%d\r\n",i);
 #endif
+        if(at_shell[i].AT_CMD == NULL || at_shell[i].cmd_cb == NULL) //命令表尾部的空条目
+        {
+            continue;
+        }
         if(strstr(buffer,(char*)at_shell[i].AT_CMD) !=0 )
         {
 #if AT_TEST>0
@@ -398,14 +463,22 @@ ERR_CODE at_traverse(char* buffer,AT at_shell[])
 void error_event_report(void)
 {
     static char err_buffer[20];
+    ERR_CODE err_code = __sys_manager.err_code;
 
-    if( __sys_manager.err_code != ERR_NONE )
+    if( err_code != ERR_NONE )
     {
         memset(err_buffer,0,20);
-        sprintf(err_buffer,"ERR:%4d\r\n",__sys_manager.err_code);
-        app_fff1_send_lvl((uint8_t*)err_buffer,strlen(err_buffer));
+        sprintf(err_buffer,"ERR:%4d\r\n",err_code);
+        uart_printf("%s",err_buffer); //本地也输出一次
+        if(__sys_manager.ble_connect == 1)
+        {
+            app_fff1_send_lvl((uint8_t*)err_buffer,strlen(err_buffer));
+        }
         __sys_manager.err_code = ERR_NONE;
-        __sys_manager.output_stat = 0;
 
+        if( err_code != ERR_CMD_UNKNOWN && err_code != ERR_PARAM ) //命令本身无效时不要打断正在进行的出货
+        {
+            __sys_manager.output_stat = 0;
+        }
     }
 }
