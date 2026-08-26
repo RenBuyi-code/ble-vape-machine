@@ -1089,6 +1089,11 @@
               <FilePath>.\app\app_oads.c</FilePath>
             </File>
             <File>
+              <FileName>app_profile_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\app_profile_utils.c</FilePath>
+            </File>
+            <File>
               <FileName>app_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app\app_uart.c</FilePath>

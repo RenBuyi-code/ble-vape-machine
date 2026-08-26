@@ -28,6 +28,7 @@
 #include <string.h>
 #include "app_batt.h"                // Battery Application Module Definitions
 #include "app.h"                     // Application Definitions
+#include "app_profile_utils.h"
 #include "app_task.h"                // application task definitions
 #include "bass_task.h"               // health thermometer functions
 #include "co_bt.h"
@@ -66,16 +67,8 @@ void app_batt_init(void)
 void app_batt_add_bas(void)
 {
     struct bass_db_cfg* db_cfg;
-    // Allocate the BASS_CREATE_DB_REQ
-    struct gapm_profile_task_add_cmd *req = KE_MSG_ALLOC_DYN(GAPM_PROFILE_TASK_ADD_CMD,
-                                            TASK_GAPM, TASK_APP,
-                                            gapm_profile_task_add_cmd, sizeof(struct bass_db_cfg));
-    // Fill message
-    req->operation   = GAPM_PROFILE_TASK_ADD;
-    req->sec_lvl     = 0;
-    req->prf_task_id = TASK_ID_BASS;
-    req->app_task    = TASK_APP;
-    req->start_hdl   = 0;
+    struct gapm_profile_task_add_cmd *req =
+        app_profile_add_cmd_alloc(TASK_ID_BASS, sizeof(struct bass_db_cfg));
 
     // Set parameters
     db_cfg = (struct bass_db_cfg* ) req->param;

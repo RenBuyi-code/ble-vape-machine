@@ -28,6 +28,7 @@
 
 #include "app.h"                     // Application Manager Definitions
 #include "app_dis.h"                 // Device Information Service Application Definitions
+#include "app_profile_utils.h"
 #include "diss_task.h"               // Device Information Profile Functions
 #include "prf_types.h"               // Profile Common Types Definitions
 
@@ -158,16 +159,8 @@ void app_dis_init(void)
 void app_dis_add_dis(void)
 {
     struct diss_db_cfg* db_cfg;
-    // Allocate the DISS_CREATE_DB_REQ
-    struct gapm_profile_task_add_cmd *req = KE_MSG_ALLOC_DYN(GAPM_PROFILE_TASK_ADD_CMD,
-                                            TASK_GAPM, TASK_APP,
-                                            gapm_profile_task_add_cmd, sizeof(struct diss_db_cfg));
-    // Fill message
-    req->operation = GAPM_PROFILE_TASK_ADD;
-    req->sec_lvl = 0;
-    req->prf_task_id = TASK_ID_DISS;
-    req->app_task = TASK_APP;
-    req->start_hdl = 0;
+    struct gapm_profile_task_add_cmd *req =
+        app_profile_add_cmd_alloc(TASK_ID_DISS, sizeof(struct diss_db_cfg));
 
     // Set parameters
     db_cfg = (struct diss_db_cfg* ) req->param;
