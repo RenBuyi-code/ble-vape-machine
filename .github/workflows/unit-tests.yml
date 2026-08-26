@@ -1,0 +1,19 @@
+name: Unit tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  host-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install gcovr
+        run: pipx install gcovr
+
+      - name: Run unit tests with coverage
+        working-directory: Code/电子烟机-V1.01/SDK/tests
+        run: make coverage

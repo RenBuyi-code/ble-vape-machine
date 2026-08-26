@@ -310,11 +310,12 @@ ERR_CODE at_del_cfg(char* buffer)
 ERR_CODE rgb_test(char* buffer)
 {
 	 uint8_t ch=0;
-	 char rgb_string[6];
+	 char rgb_string[9];
 	
 	 ch =buffer[4]-48;
 	
 	 memcpy(rgb_string,&buffer[5],8);	
+	 rgb_string[8] = '\0';
 	
 
 	 drv_ws2812_set_color(ch,strtoul(rgb_string,0,0));	
@@ -325,12 +326,7 @@ ERR_CODE rgb_test(char* buffer)
 
 ERR_CODE at_st_cb(char* buffer)
 {
-	 uint16_t len = 0;
-    char *p_str = NULL;
-    uint32_t time = 0;
-
-	 	
-    __sys_manager.time = atoi(p_str+4);
+    __sys_manager.time = atoi(buffer+4);
 	 UART_PRINTF("__sys_manager.time = %d\r\n",__sys_manager.time);
     return ERR_NONE;
 }

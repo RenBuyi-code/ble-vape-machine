@@ -15,7 +15,7 @@ typedef struct
 }AT;
 
 
-#define  SHELL_LEN  13
+#define  SHELL_LEN  10
 extern AT AT_Shell[SHELL_LEN];
 
 unsigned char  ble_status_change(char* AT_CMD,char* rx_buffer); 
